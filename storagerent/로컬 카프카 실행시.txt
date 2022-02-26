@@ -1,0 +1,13 @@
+#이동
+cd C:\dev\util\kafka_2.13-2.8.0\bin\windows
+#실행
+zookeeper-server-start.bat ../../config/zookeeper.properties
+kafka-server-start.bat ../../config/server.properties
+#토픽 생성
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+#토픽 목록 확인
+kafka-topics.bat --list --zookeeper localhost:2181
+#producer
+kafka-console-producer.bat --broker-list localhost:9092 --topic test
+#consumer
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning

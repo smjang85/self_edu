@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation
+  labels:
+    app: reservation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservation
+  template:
+    metadata:
+      labels:
+        app: reservation
+    spec:
+      containers:
+        - name: reservation
+          image: 879772956301.dkr.ecr.ca-central-1.amazonaws.com/user20-reservation:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+          resources:
+            limits:
+              cpu: "500m"
+            requests:
+              cpu: "200m"
+          env:
+          - name: PHONENO
+            valueFrom:
+              configMapKeyRef:
+                name: admin-phone-no-cm
+                key: ADMIN_PHONE_NO
